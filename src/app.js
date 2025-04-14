@@ -3,6 +3,7 @@ import cors from 'cors';
 import httpStatus from 'http-status';
 import itemsRouter from './routes/items.routes.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
+import { successResponse } from './utils/response.utils.js';
 
 const app = express();
 
@@ -16,7 +17,12 @@ global.itemId = 1;
 
 // Rota de teste
 app.get('/health', (req, res) => {
-  return res.status(httpStatus.OK).send('OK! Servidor funcionando!');
+  return successResponse(res, { 
+    status: 'OK', 
+    message: 'Servidor funcionando!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // Rotas da API

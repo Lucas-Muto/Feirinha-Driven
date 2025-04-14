@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import { createItem, getAllItems, getItemsByType, getItemById } from '../models/items.model.js';
+import { successResponse, errorResponse, createdResponse, notFoundResponse } from '../utils/response.utils.js';
 
 // Controlador para gerenciar operações relacionadas aos itens
 const itemsController = {
@@ -12,17 +13,13 @@ const itemsController = {
     
     if (!result.success) {
       if (result.error === 'conflict') {
-        return res.status(httpStatus.CONFLICT).json({
-          message: result.message
-        });
+        return errorResponse(res, result.message, httpStatus.CONFLICT);
       }
       
-      return res.status(httpStatus.BAD_REQUEST).json({
-        message: result.message
-      });
+      return errorResponse(res, result.message, httpStatus.BAD_REQUEST);
     }
     
-    return res.status(httpStatus.CREATED).json(result.item);
+    return createdResponse(res, result.item);
   },
   
   // Listar todos os itens, com filtragem opcional por tipo
@@ -32,7 +29,7 @@ const itemsController = {
     // Se houver parâmetro 'type', filtrar por tipo
     const items = type ? getItemsByType(type) : getAllItems();
     
-    return res.status(httpStatus.OK).json(items);
+    return successResponse(res, items);
   },
   
   // Buscar um item específico por ID
@@ -43,17 +40,13 @@ const itemsController = {
     
     if (!result.success) {
       if (result.error === 'not_found') {
-        return res.status(httpStatus.NOT_FOUND).json({
-          message: result.message
-        });
+        return notFoundResponse(res, result.message);
       }
       
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-        message: 'Erro ao buscar item'
-      });
+      return errorResponse(res, 'Erro ao buscar item');
     }
     
-    return res.status(httpStatus.OK).json(result.item);
+    return successResponse(res, result.item);
   }
 };
 
