@@ -7,13 +7,6 @@ const itemsController = {
   create: (req, res) => {
     const { name, quantity, type } = req.body;
     
-    // Validar os dados de entrada
-    if (!name || quantity === undefined || !type) {
-      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-        message: 'Todos os campos são obrigatórios: name, quantity e type'
-      });
-    }
-    
     // Criar o item usando o modelo
     const result = createItem({ name, quantity, type });
     
@@ -49,12 +42,6 @@ const itemsController = {
     const result = getItemById(id);
     
     if (!result.success) {
-      if (result.error === 'bad_request') {
-        return res.status(httpStatus.BAD_REQUEST).json({
-          message: result.message
-        });
-      }
-      
       if (result.error === 'not_found') {
         return res.status(httpStatus.NOT_FOUND).json({
           message: result.message

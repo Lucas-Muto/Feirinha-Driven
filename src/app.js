@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import itemsRouter from './routes/items.routes.js';
+import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 
 const app = express();
 
@@ -20,6 +21,12 @@ app.get('/health', (req, res) => {
 
 // Rotas da API
 app.use('/items', itemsRouter);
+
+// Middleware para rotas não encontradas
+app.use(notFoundHandler);
+
+// Middleware para tratamento de erros
+app.use(errorHandler);
 
 // Porta definida como 5000 conforme requisito
 const PORT = 5000;
